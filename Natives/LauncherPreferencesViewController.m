@@ -224,6 +224,16 @@
         ], @[ 
             // Control settings
             @{@"icon": @"gamecontroller"},
+            // --- [修改] TouchController 模组支持 ---
+            @{@"key": @"mod_touch_enable",
+              @"icon": @"hand.point.up.left", // SF Symbols 图标
+              @"hasDetail": @YES,
+              @"type": self.typeChildPane,
+              @"enableCondition": whenNotInGame,
+              @"canDismissWithSwipe": @NO,
+              @"class": NSClassFromString(@"TouchControllerPreferencesViewController")
+            },
+            // ------------------------------------------
             @{@"key": @"default_gamepad_ctrl",
                 @"icon": @"hammer",
                 @"type": self.typeChildPane,
@@ -259,7 +269,11 @@
             @{@"key": @"slideable_hotbar",
                 @"hasDetail": @YES,
                 @"icon": @"slider.horizontal.below.rectangle",
-                @"type": self.typeSwitch
+                @"type": self.typeSwitch,
+                @"enableCondition": ^BOOL(){
+                    // 当 TouchController 启用时，禁用此选项（返回 NO 表示禁用/变灰）
+                    return ![self.getPreference(@"control", @"mod_touch_enable") boolValue];
+                }
             },
             @{@"key": @"press_duration",
                 @"hasDetail": @YES,
