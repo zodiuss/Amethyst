@@ -122,7 +122,14 @@ typedef NS_ENUM(NSInteger, TouchControllerCommMode) {
         if (customSwitchValue == nil) {
             [view setOn:[weakSelf.getPreference(section, key) boolValue] animated:NO];
         } else {
-            [view setOn:[weakSelf.getPreference(section, key) isEqualToString:customSwitchValue[1]] animated:NO];
+            id preferenceValue = weakSelf.getPreference(section, key);
+            BOOL isEnabled = NO;
+            if ([preferenceValue isKindOfClass:[NSString class]]) {
+                isEnabled = [preferenceValue isEqualToString:customSwitchValue[1]];
+            } else if ([preferenceValue isKindOfClass:[NSNumber class]]) {
+                isEnabled = [preferenceValue integerValue] == [customSwitchValue[1] integerValue];
+            }
+            [view setOn:isEnabled animated:NO];
         }
         [view addTarget:weakSelf action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
         cell.accessoryView = view;
